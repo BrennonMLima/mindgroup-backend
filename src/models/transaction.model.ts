@@ -8,7 +8,7 @@ export class Transactions extends BaseModel {
   description: string;
 
   @Column()
-  price: number;
+  price: string;
 
   @Column({ type: "enum", enum: ["income", "expense"] })
   type: "income" | "expense";

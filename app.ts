@@ -1,6 +1,6 @@
 import * as express from "express";
 import * as cors from "cors"
-import {publicRouter, userRouter } from "./src/routes";
+import {publicRouter, userRouter,transactionRouter } from "./src/routes";
 import { AppDataSource } from "./src/db/data-source"
 import exceptionsMiddleware from "./src/middleware/exceptions.middleware";
 
@@ -16,6 +16,7 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 app.use("/user", userRouter);
+app.use("/transaction", transactionRouter);
 app.use("", publicRouter);
 app.use(exceptionsMiddleware);
 
