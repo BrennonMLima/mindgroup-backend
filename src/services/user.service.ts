@@ -51,7 +51,6 @@ export class UserService {
         userData.password
       );
 
-
       const user = Users.create({
         name: userData.name,
         email: userData.email,

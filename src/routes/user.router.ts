@@ -1,8 +1,9 @@
 import * as express from "express";
 import { Request, Response } from "express";
 import { UserService } from "../services/user.service";
-import protectedRoute from "../security/guard";
+import protectedRoute, { TokenPayload } from "../security/guard";
 import { UserDTO } from "../dto/user.dto";
+import * as jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -26,38 +27,22 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.use(protectedRoute);
-router.get("/",  async (req: Request, res: Response) => {
-  try {
-    const users = await UserService.getAllUsers();
-    const usersDTO = users.map((user) => {
-      return {
-        email: user.email,
-        name: user.name,
-        createdAt: user.createdAt,
-        id: user.id,
-      };
-    }) as UserDTO[];
 
-    return res.send({ users: usersDTO });
-  } catch (error) {
-    return res
-      .status(500)
-      .send({ message: "Erro ao consultar tabela de usuários." });
-  }
-});
-
-router.get("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
+router.get("/", async (req: Request, res: Response) => {
+  const {authorization} = req.headers
+  const token = authorization.split(' ')[1]
   try {
-    const user = await UserService.getUserById(id);
+    const userid = jwt.decode(token) as TokenPayload
+    const user = await UserService.getUserById(userid.id);
     const userDTO = {
       email: user.email,
       name: user.name,
       createdAt: user.createdAt,
+      image: user.image,
       id: user.id,
     } as UserDTO;
 
-    return res.send({ users: userDTO });
+    return res.send({ user: userDTO });
   } catch (error) {
     return res
       .status(500)

@@ -7,7 +7,7 @@ export class Transactions extends BaseModel {
   @Column()
   description: string;
 
-  @Column()
+  @Column("decimal", { precision: 5, scale: 2 })
   price: string;
 
   @Column({ type: "enum", enum: ["Receita", "Despesa"] })

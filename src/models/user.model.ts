@@ -13,7 +13,7 @@ export class Users extends BaseModel {
   @Column()
   password: string;
 
-  @Column({ type: "blob", nullable: true })
+  @Column({ type: "mediumblob", nullable: true })
   image: Buffer;
 
   @OneToMany(() => Transactions, transaction => transaction.user)

@@ -80,4 +80,46 @@ export class TransactionService {
       throw new InternalException("Erro ao deletar transação.");
     }
   }
+
+  static async getTotalDespesas(userId: string): Promise<number> {
+    try {
+      const user = await Users.findOneBy({ id: userId });
+      if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+      const despesas = await Transactions.createQueryBuilder("transaction")
+        .select("SUM(transaction.price)", "total")
+        .where("transaction.type = :type", { type: "Despesa" })
+        .andWhere("transaction.userId = :userId", { userId })
+        .getRawOne();
+
+      if (!despesas || !despesas.total) throw new NotFoundException("Nenhuma despesa encontrada para este usuário.");
+
+      return parseFloat(despesas.total);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalException("Erro ao calcular o total de despesas.");
+    }
+  }
+
+  static async getTotalReceitas(userId: string): Promise<number> {
+    try {
+      const user = await Users.findOneBy({ id: userId });
+      if (!user) throw new NotFoundException("Usuário não encontrado.");
+
+      const receitas = await Transactions.createQueryBuilder("transaction")
+        .select("SUM(transaction.price)", "total")
+        .where("transaction.type = :type", { type: "Receita" })
+        .andWhere("transaction.userId = :userId", { userId })
+        .getRawOne();
+
+      if (!receitas || !receitas.total) throw new NotFoundException("Nenhuma receita encontrada para este usuário.");
+
+      return parseFloat(receitas.total);
+    } catch (error) {
+      console.error(error);
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalException("Erro ao calcular o total de receitas.");
+    }
+  }
 }

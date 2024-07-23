@@ -13,7 +13,6 @@ router.post("/login", async (req: Request, res: Response) => {
     const tokenJWT = await SecurityClass.authenticateUser(email, password);
     console.log(tokenJWT);
     
-
     if (tokenJWT) return res.status(200).send({ token: tokenJWT });
 
     return res.status(401).send("Não autorizado");
