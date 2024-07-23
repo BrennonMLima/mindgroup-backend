@@ -57,12 +57,8 @@ export class TransactionService {
       if (!user) throw new NotFoundException("Usuário não encontrado.");
 
       const transaction = new Transactions();
-      transaction.description = transactionData.description;
-      transaction.price = transactionData.price;
-      transaction.type = transactionData.type;
-      transaction.date = transactionData.date;
-      transaction.category = transactionData.category;
-      transaction.user = user; 
+      transaction.user = user;
+      Object.assign(transaction,transactionData); 
 
       const newTransaction = await Transactions.save(transaction);
 

@@ -10,8 +10,8 @@ export class Transactions extends BaseModel {
   @Column()
   price: string;
 
-  @Column({ type: "enum", enum: ["income", "expense"] })
-  type: "income" | "expense";
+  @Column({ type: "enum", enum: ["Receita", "Despesa"] })
+  type: "Receita" | "Despesa";
 
   @Column()
   date: Date;

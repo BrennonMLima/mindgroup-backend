@@ -15,6 +15,7 @@ router.post("/", async (req: Request, res: Response) => {
       email: user.email,
       name: user.name,
       createdAt: user.createdAt,
+      image: user.image,
       id: user.id,
     } as UserDTO;
 
@@ -25,7 +26,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.use(protectedRoute);
-router.get("/", async (req: Request, res: Response) => {
+router.get("/",  async (req: Request, res: Response) => {
   try {
     const users = await UserService.getAllUsers();
     const usersDTO = users.map((user) => {

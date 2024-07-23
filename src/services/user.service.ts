@@ -51,10 +51,12 @@ export class UserService {
         userData.password
       );
 
+
       const user = Users.create({
         name: userData.name,
         email: userData.email,
         password: userHashPassword,
+        image: userData.image,
       });
 
       const newUser = await Users.save(user);
