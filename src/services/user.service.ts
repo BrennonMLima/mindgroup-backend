@@ -2,7 +2,6 @@ import { UserDTO } from "../dto/user.dto";
 import { InternalException, NotFoundException } from "../exceptions";
 import { Users } from "../models/user.model";
 import { SecurityClass } from "../security/security";
-import fs = require('fs');
 export class UserService {
   static async getAllUsers(): Promise<Users[]> {
     try {
