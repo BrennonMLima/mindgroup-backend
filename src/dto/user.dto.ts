@@ -3,9 +3,9 @@ export class UserDTO {
     email: string;
     createdAt: Date;
     id: string;
-    image: Buffer;
+    image?: Buffer;
   
-    constructor(name: string, email: string, createdAt: Date, id: string, image: Buffer) {
+    constructor(name: string, email: string, createdAt: Date, id: string, image?: Buffer) {
       this.name = name;
       this.email = email;
       this.createdAt = createdAt;

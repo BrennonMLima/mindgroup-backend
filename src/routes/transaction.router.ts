@@ -89,4 +89,17 @@ router.get("/user/receitas", async (req: Request, res: Response) => {
   }
 });
 
+router.put('/:id', async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const transactionData = req.body;
+
+  try {
+    const updatedTransaction = await TransactionService.updateTransaction(id, transactionData);
+    res.status(200).json(updatedTransaction);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
 export default router;

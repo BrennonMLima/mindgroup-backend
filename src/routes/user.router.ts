@@ -4,14 +4,27 @@ import { UserService } from "../services/user.service";
 import protectedRoute, { TokenPayload } from "../security/guard";
 import { UserDTO } from "../dto/user.dto";
 import * as jwt from "jsonwebtoken";
+import multer = require('multer');
+import fs = require('fs');
 
 const router = express.Router();
+const upload = multer({ dest: 'uploads/'});
 
-router.post("/", async (req: Request, res: Response) => {
-  const { body } = req;
+router.post("/", upload.single('image'), async (req: Request, res: Response) => {
+  const { name, email, password } = req.body;
+
+  let imageData: Buffer | undefined;
+  if (req.file) {
+    try {
+      imageData = fs.readFileSync(req.file.path);
+    } catch (err) {
+      console.error(`Erro ao ler a imagem: ${err}`);
+      return res.status(500).send({ message: "Erro ao processar a imagem." });
+    }
+  }
 
   try {
-    const user = await UserService.createUser(body);
+    const user = await UserService.createUser({ name, email, password, image: imageData });
     const userDTO = {
       email: user.email,
       name: user.name,
@@ -25,7 +38,6 @@ router.post("/", async (req: Request, res: Response) => {
     return res.status(500).send({ message: "Erro ao criar usuário." });
   }
 });
-
 router.use(protectedRoute);
 
 router.get("/", async (req: Request, res: Response) => {

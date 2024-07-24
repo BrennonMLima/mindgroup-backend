@@ -3,11 +3,11 @@ import { Transactions } from "../models/transaction.model";
 import { Users } from "../models/user.model";
 
 export class TransactionService {
-  
+
   static async getAllTransactions(): Promise<Transactions[]> {
     try {
       const transactions = await Transactions.find();
-      
+
       if (transactions.length === 0)
         throw new NotFoundException("Transações não encontradas.");
 
@@ -58,7 +58,7 @@ export class TransactionService {
 
       const transaction = new Transactions();
       transaction.user = user;
-      Object.assign(transaction,transactionData); 
+      Object.assign(transaction, transactionData);
 
       const newTransaction = await Transactions.save(transaction);
 
@@ -122,4 +122,23 @@ export class TransactionService {
       throw new InternalException("Erro ao calcular o total de receitas.");
     }
   }
+
+  static async updateTransaction(transactionId: string, transactionData: Partial<Transactions>): Promise<Transactions> {
+    try {
+      const transaction = await Transactions.findOneBy({ id: transactionId });
+      if (!transaction) throw new NotFoundException("Transação não encontrada.");
+
+      Object.assign(transaction, transactionData);
+
+      const updatedTransaction = await Transactions.save(transaction);
+
+      return updatedTransaction;
+    } catch (error) {
+      console.error(error);
+      if (error instanceof NotFoundException) throw error;
+      throw new InternalException("Erro ao atualizar transação.");
+    }
+  }
 }
+
+

@@ -2,7 +2,7 @@ import { UserDTO } from "../dto/user.dto";
 import { InternalException, NotFoundException } from "../exceptions";
 import { Users } from "../models/user.model";
 import { SecurityClass } from "../security/security";
-
+import fs = require('fs');
 export class UserService {
   static async getAllUsers(): Promise<Users[]> {
     try {
@@ -45,34 +45,32 @@ export class UserService {
     }
   }
 
-  static async createUser(userData: Users): Promise<UserDTO> {
-    try {
-      const userHashPassword = await SecurityClass.encryptUserPassword(
-        userData.password
-      );
+static async createUser(userData: { name: string; email: string; password: string; image?: Buffer }): Promise<UserDTO> {
+  try {
+    const userHashPassword = await SecurityClass.encryptUserPassword(userData.password);
 
-      const user = Users.create({
-        name: userData.name,
-        email: userData.email,
-        password: userHashPassword,
-        image: userData.image,
-      });
+    const user = Users.create({
+      name: userData.name,
+      email: userData.email,
+      password: userHashPassword,
+      image: userData.image,
+    });
 
-      const newUser = await Users.save(user);
+    const newUser = await Users.save(user);
 
-      return new UserDTO(
-        newUser.name,
-        newUser.email,
-        newUser.createdAt,
-        newUser.id,
-        newUser.image
-      );
-    } catch (error) {
-      console.error(error);
-      if (error instanceof NotFoundException) throw error;
-      throw new InternalException(`Erro ao criar usuário`);
-    }
+    return new UserDTO(
+      newUser.name,
+      newUser.email,
+      newUser.createdAt,
+      newUser.id,
+      newUser.image
+    );
+  } catch (error) {
+    console.error(error);
+    if (error instanceof NotFoundException) throw error;
+    throw new InternalException(`Erro ao criar usuário`);
   }
+}
 
   static async deleteUser(userId: string): Promise<void> {
     try {
